@@ -1,7 +1,20 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
 import { MobileScreenComponent } from './features/mobile/mobile-screen.component';
-import { WebPlaceholderComponent } from './features/web/web-placeholder.component';
+import { WebScreenComponent } from './features/web/web-screen.component';
+
+const webScreens: Routes = [
+  { path: 'login', component: WebScreenComponent, data: { screen: 'W01' } },
+  { path: 'cuenta-vinculada', component: WebScreenComponent, data: { screen: 'W02' } },
+  { path: 'dashboard', component: WebScreenComponent, data: { screen: 'W03' } },
+  { path: 'historial', component: WebScreenComponent, data: { screen: 'W04' } },
+  { path: 'detalle-alarma', component: WebScreenComponent, data: { screen: 'W07' } },
+  { path: 'cuenta', component: WebScreenComponent, data: { screen: 'W12' } },
+  { path: 'sesiones-activas', component: WebScreenComponent, data: { screen: 'W13' } },
+  { path: 'privacidad', component: WebScreenComponent, data: { screen: 'W14' } },
+  { path: 'sincronizacion', component: WebScreenComponent, data: { screen: 'W16' } },
+  { path: '', pathMatch: 'full', redirectTo: 'login' },
+];
 
 const mobileScreens: Routes = [
   { path: 'inicio', component: MobileScreenComponent, data: { screen: 'M01' } },
@@ -26,7 +39,7 @@ const mobileScreens: Routes = [
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: 'Alarma Conversacional' },
-  { path: 'web', component: WebPlaceholderComponent, title: 'Maquetación web' },
+  { path: 'web', children: webScreens, title: 'Maquetación web' },
   { path: 'mobile', children: mobileScreens, title: 'Maquetación mobile' },
   { path: '**', redirectTo: '' },
 ];

@@ -1,0 +1,175 @@
+<div class="prototype-page">
+  <header class="prototype-toolbar">
+    <a routerLink="/" class="toolbar-link"><app-icon name="back" /> Elegir maquetación</a>
+    <div><span class="view-code">{{ screen() }}</span><strong>{{ screenLabel[screen()] }}</strong></div>
+    <span class="view-count">Web MVP · 9 vistas</span>
+  </header>
+
+  <main class="web-frame">
+    @switch (screen()) {
+      @case ('W01') {
+        <section class="auth-shell">
+          <div class="auth-card">
+            <div class="mini-brand"><span><app-icon name="alarm" /></span><strong>Alarma Conversacional</strong></div>
+            <p class="eyebrow">Panel web</p><h1>Inicia sesión</h1><p class="auth-sub">Administra tus alarmas, tu historial y tu cuenta vinculada desde el navegador.</p>
+            <div class="demo-banner"><app-icon name="info" /><p>Datos de demostración precargados. Solo da clic en <strong>Iniciar sesión</strong>.</p></div>
+            @if (loginError()) { <div class="error-banner" role="alert" aria-live="polite"><app-icon name="alert" /><p>Revisa tu correo y una contraseña de al menos 4 caracteres.</p></div> }
+            <form (ngSubmit)="login()">
+              <label class="field">Correo electrónico<input type="email" [ngModel]="email()" (ngModelChange)="email.set($event)" name="email" placeholder="tu@correo.com" /></label>
+              <label class="field">Contraseña<input type="password" [ngModel]="password()" (ngModelChange)="password.set($event)" name="password" placeholder="••••••••" /></label>
+              <button type="submit" class="button button--primary button--full" [disabled]="loading()">{{ loading() ? 'Ingresando…' : 'Iniciar sesión' }}</button>
+            </form>
+            <button class="button button--text button--full">¿Olvidaste tu contraseña?</button>
+            <p class="auth-foot">Este dispositivo se vinculará automáticamente con tu cuenta móvil.</p>
+          </div>
+        </section>
+      }
+      @case ('W02') {
+        <section class="auth-shell">
+          <div class="auth-card auth-card--center">
+            <span class="hero-icon hero-icon--success"><app-icon name="check" /></span>
+            <p class="eyebrow">Todo listo</p><h1>Cuenta vinculada</h1><p class="auth-sub">Tu panel web ya está conectado con tu cuenta móvil.</p>
+            <article class="summary-card"><span><app-icon name="mobile" /></span><div><strong>{{ device.name }}</strong><small>Vinculado el {{ device.linkedDate }}</small></div></article>
+            <button class="button button--primary button--full" (click)="go('dashboard')">Ir al dashboard</button>
+          </div>
+        </section>
+      }
+      @default {
+        <div class="app-shell">
+          <header class="app-topbar">
+            <div class="mini-brand"><span><app-icon name="alarm" /></span><strong>Alarma Conversacional</strong></div>
+            <div class="topbar-user"><span class="sync-dot" [class.sync-dot--error]="syncState()==='error'" [attr.title]="syncState()==='error' ? 'Error de sincronización' : 'Sincronizado'"></span><span class="avatar">{{ user.initials }}</span><span class="user-name">{{ user.name }}</span></div>
+          </header>
+          <div class="app-body">
+            <nav class="app-sidebar" aria-label="Navegación web">
+              <button [class.active]="activeNav()==='dashboard'" (click)="go('dashboard')"><app-icon name="home" /> Dashboard</button>
+              <button [class.active]="activeNav()==='historial'" (click)="go('historial')"><app-icon name="clock" /> Historial</button>
+              <button [class.active]="activeNav()==='cuenta'" (click)="go('cuenta')"><app-icon name="user" /> Cuenta</button>
+              <button [class.active]="activeNav()==='privacidad'" (click)="go('privacidad')"><app-icon name="shield" /> Privacidad</button>
+              <button [class.active]="activeNav()==='sincronizacion'" (click)="go('sincronizacion')"><app-icon name="network" /> Sincronización</button>
+            </nav>
+            <main class="app-main">
+              @switch (screen()) {
+                @case ('W03') {
+                  <div class="page-heading"><div><p class="eyebrow">Resumen</p><h1>Hola, {{ user.name.split(' ')[0] }}</h1></div><span class="date-chip">Hoy · 17 sept</span></div>
+                  <article class="next-card next-card--wide"><div class="wave-bg"></div><span class="status-chip"><i></i> Próxima alarma</span><p class="big-time">06:30</p><h2>Entrenamiento de fuerza</h2><p class="next-card-sub">Mañana · Conversación media</p><button class="button button--amber next-card-action" (click)="go('detalle-alarma')">Ver detalle <app-icon name="arrow" /></button></article>
+                  <div class="stat-grid">
+                    <article class="stat-card"><span class="row-icon"><app-icon name="alarm" /></span><strong>{{ stats.active }}</strong><small>Alarmas activas</small></article>
+                    <article class="stat-card"><span class="row-icon row-icon--success"><app-icon name="check" /></span><strong>{{ stats.confirmed }}</strong><small>Confirmadas (7 días)</small></article>
+                    <article class="stat-card"><span class="row-icon row-icon--amber"><app-icon name="clock" /></span><strong>{{ stats.postponed }}</strong><small>Pospuestas (7 días)</small></article>
+                    <article class="stat-card"><span class="row-icon row-icon--danger"><app-icon name="alert" /></span><strong>{{ stats.unconfirmed }}</strong><small>Sin confirmar (7 días)</small></article>
+                  </div>
+                  <div class="list-title"><h2>Actividad reciente</h2><button class="button button--text" (click)="go('historial')">Ver historial completo <app-icon name="arrow" /></button></div>
+                  <div class="activity-list">
+                    @for (item of recentActivity; track item.time) {
+                      <article class="activity-row"><span class="row-icon"><app-icon name="alarm" /></span><div><strong>{{ item.purpose }}</strong><small>{{ item.time }}</small></div><span class="badge" [class.badge--success]="item.status==='confirmed'" [class.badge--warn]="item.status==='postponed'" [class.badge--error]="item.status==='unconfirmed'">{{ statusLabel[item.status] }}</span></article>
+                    }
+                  </div>
+                }
+                @case ('W04') {
+                  <div class="page-heading"><div><p class="eyebrow">Registro</p><h1>Historial de alarmas</h1></div><span class="badge badge--indigo">{{ historyRows.length }} registros</span></div>
+                  <div class="table-card">
+                    <div class="table-row table-row--head"><span>Fecha</span><span>Hora</span><span>Propósito</span><span>Estado</span><span>Intentos</span><span></span></div>
+                    @for (row of historyRows; track $index) {
+                      <div class="table-row"><span data-label="Fecha">{{ row.date }}</span><span data-label="Hora">{{ row.time }}</span><span data-label="Propósito" class="table-cell--purpose">{{ row.purpose }}</span><span data-label="Estado" class="badge" [class.badge--success]="row.status==='confirmed'" [class.badge--warn]="row.status==='postponed'" [class.badge--error]="row.status==='unconfirmed'">{{ statusLabel[row.status] }}</span><span data-label="Intentos">{{ row.attempts }}</span><button class="button button--text" (click)="viewDetail($index)">Ver detalle <app-icon name="arrow" /></button></div>
+                    }
+                  </div>
+                }
+                @case ('W07') {
+                  <button class="button button--text back-button" (click)="go('historial')"><app-icon name="back" /> Volver al historial</button>
+                  <div class="page-heading"><div><p class="eyebrow">Detalle</p><h1>{{ selectedHistory().purpose }}</h1></div><span class="badge" [class.badge--success]="selectedHistory().status==='confirmed'" [class.badge--warn]="selectedHistory().status==='postponed'" [class.badge--error]="selectedHistory().status==='unconfirmed'">{{ statusLabel[selectedHistory().status] }}</span></div>
+                  <article class="detail-card">
+                    <div class="detail-grid">
+                      <div><small>Fecha</small><strong>{{ selectedHistory().date }}</strong></div>
+                      <div><small>Hora</small><strong>{{ selectedHistory().time }}</strong></div>
+                      <div><small>Intensidad</small><strong>{{ selectedHistory().intensity }}</strong></div>
+                      <div><small>Intentos</small><strong>{{ selectedHistory().attempts }}</strong></div>
+                    </div>
+                    <div class="info-banner"><app-icon name="info" /><p>Este registro se guardó localmente en el dispositivo que respondió la alarma y se sincronizó con tu cuenta.</p></div>
+                  </article>
+                }
+                @case ('W12') {
+                  <div class="page-heading"><div><p class="eyebrow">Perfil</p><h1>Cuenta</h1></div></div>
+                  <article class="profile-card"><span class="avatar avatar--lg">{{ user.initials }}</span><div><strong>{{ user.name }}</strong><small>{{ user.email }}</small></div></article>
+                  <div class="settings-list">
+                    <div class="settings-row"><span class="row-icon"><app-icon name="mobile" /></span><span><strong>{{ device.name }}</strong><small>Vinculado el {{ device.linkedDate }}</small></span><button class="button button--secondary" (click)="open('UNLINK')">Desvincular</button></div>
+                    <div class="settings-row"><span class="row-icon"><app-icon name="microphone" /></span><span><strong>Respuesta por voz</strong><small>Permite responder alarmas hablando</small></span><button class="switch" [class.on]="micEnabled()" role="switch" [attr.aria-checked]="micEnabled()" (click)="toggleMic()"><i></i></button></div>
+                    <button class="settings-row settings-row--link" (click)="go('sesiones-activas')"><span class="row-icon"><app-icon name="laptop" /></span><span><strong>Sesiones activas</strong><small>Dispositivos con acceso a tu cuenta</small></span><app-icon name="arrow" /></button>
+                    <button class="settings-row settings-row--link" (click)="go('privacidad')"><span class="row-icon"><app-icon name="shield" /></span><span><strong>Privacidad y datos</strong><small>Permisos y eliminación</small></span><app-icon name="arrow" /></button>
+                  </div>
+                  <button class="button button--text logout-link" (click)="open('LOGOUT')"><app-icon name="logout" /> Cerrar sesión</button>
+                }
+                @case ('W13') {
+                  <div class="page-heading"><div><p class="eyebrow">Seguridad</p><h1>Sesiones activas</h1></div></div>
+                  <div class="session-list">
+                    @for (s of sessions(); track s.device) {
+                      <article class="session-row"><span class="row-icon"><app-icon name="laptop" /></span><div><strong>{{ s.device }}</strong><small>{{ s.client }} · {{ s.location }}</small></div>@if(s.current){<span class="badge badge--success">Sesión actual</span>} @else {<small class="session-lastactive">{{ s.lastActive }}</small><button class="button button--danger-outline" (click)="removeSession($index)">Cerrar sesión</button>}</article>
+                    }
+                  </div>
+                }
+                @case ('W14') {
+                  <div class="privacy-hero"><span class="hero-icon"><app-icon name="shield" /></span><h1>Tus datos, bajo tu control</h1><p>Este prototipo procesa la información localmente y no la envía a servicios externos.</p></div>
+                  @if (deleteConfirmedKind(); as kind) {
+                    <div class="success-banner" role="status" aria-live="polite"><app-icon name="check" /><p>{{ kind === 'alarms' ? 'Tus alarmas fueron eliminadas.' : 'Todos tus datos fueron eliminados.' }}</p></div>
+                  }
+                  <div class="settings-list destructive-list">
+                    <button (click)="confirmDelete('alarms')"><span class="row-icon"><app-icon name="delete" /></span><span><strong>Eliminar alarmas</strong><small>Conserva ajustes y preferencias</small></span><app-icon name="arrow" /></button>
+                    <button (click)="confirmDelete('data')"><span class="row-icon row-icon--danger"><app-icon name="delete" /></span><span><strong>Eliminar todos mis datos</strong><small>Alarmas, ajustes y preferencias</small></span><app-icon name="arrow" /></button>
+                  </div>
+                }
+                @case ('W16') {
+                  <div class="page-heading"><div><p class="eyebrow">Estado</p><h1>Sincronización</h1></div></div>
+                  <article class="sync-card" [class.sync-card--error]="syncState()==='error'">
+                    <span class="hero-icon" [class.hero-icon--success]="syncState()==='ok'" [class.hero-icon--syncing]="syncState()==='syncing'" [class.hero-icon--error]="syncState()==='error'">
+                      <app-icon [name]="syncState()==='error' ? 'alert' : syncState()==='syncing' ? 'network' : 'check'" />
+                    </span>
+                    @switch (syncState()) {
+                      @case ('ok') { <h2>Todo sincronizado</h2><p>Última sincronización: {{ lastSync() }}</p> }
+                      @case ('syncing') { <h2>Sincronizando…</h2><p>Actualizando tus alarmas y tu historial.</p> }
+                      @case ('error') { <h2>No pudimos sincronizar</h2><p>Revisa tu conexión e inténtalo de nuevo.</p> }
+                    }
+                    @if (syncState()==='error') {
+                      <button class="button button--danger-outline" (click)="syncNow()">Reintentar</button>
+                    } @else {
+                      <button class="button button--primary" [disabled]="syncState()==='syncing'" (click)="syncNow()">{{ syncState()==='syncing' ? 'Sincronizando…' : 'Sincronizar ahora' }}</button>
+                    }
+                  </article>
+                  <div class="info-banner"><app-icon name="network" /><p>La sincronización mantiene tus alarmas, historial y ajustes iguales entre el móvil y la web.</p></div>
+                }
+              }
+            </main>
+          </div>
+        </div>
+      }
+    }
+  </main>
+
+  @if (overlay(); as currentOverlay) {
+    <div class="overlay-backdrop" (click)="close()" (keydown.escape)="close()" role="presentation">
+      <section class="overlay-card" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+        <header><span class="overlay-code" [attr.data-hidden]="currentOverlay!=='W15'">{{ currentOverlay==='W15' ? 'W15' : '' }}</span><button class="icon-button" (click)="close()"><app-icon name="close" /></button></header>
+        @switch (currentOverlay) {
+          @case ('W15') {
+            <span class="dialog-icon dialog-icon--danger"><app-icon name="delete" /></span>
+            @if (deleteKind()==='alarms') { <h2>¿Eliminar todas las alarmas?</h2><p>Se conservarán tus preferencias y ajustes de cuenta.</p> }
+            @else { <h2>¿Eliminar todos tus datos?</h2><p>Esta acción eliminará alarmas, historial, preferencias y permisos de tu cuenta.</p> }
+            <button class="button button--danger button--full" (click)="performDelete()">{{ deleteKind()==='alarms' ? 'Eliminar alarmas' : 'Sí, eliminar todo' }}</button>
+            <button class="button button--text button--full" (click)="close()">Cancelar</button>
+          }
+          @case ('UNLINK') {
+            <span class="dialog-icon dialog-icon--danger"><app-icon name="logout" /></span>
+            <h2>¿Desvincular este dispositivo?</h2><p>{{ device.name }} dejará de tener acceso automático a tu cuenta.</p>
+            <button class="button button--danger button--full" (click)="close();go('login')">Desvincular</button>
+            <button class="button button--text button--full" (click)="close()">Cancelar</button>
+          }
+          @case ('LOGOUT') {
+            <span class="dialog-icon"><app-icon name="logout" /></span>
+            <h2>¿Cerrar sesión?</h2><p>Podrás volver a entrar con tu correo y contraseña cuando quieras.</p>
+            <button class="button button--primary button--full" (click)="logout()">Cerrar sesión</button>
+            <button class="button button--text button--full" (click)="close()">Cancelar</button>
+          }
+        }
+      </section>
+    </div>
+  }
+</div>
