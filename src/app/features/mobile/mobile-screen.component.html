@@ -1,0 +1,105 @@
+<div class="prototype-page">
+  <header class="prototype-toolbar">
+    <a routerLink="/" class="toolbar-link"><app-icon name="back" /> Elegir maquetación</a>
+    <div><span class="view-code">{{ screen() }}</span><strong>{{ screenLabel[screen()] }}</strong></div>
+    <span class="view-count">Mobile MVP · 29 vistas</span>
+  </header>
+
+  <main class="mobile-frame" [class.mobile-frame--dark]="isDark()" [class.mobile-frame--large]="largeText()" [class.mobile-frame--contrast]="highContrast()">
+    @switch (screen()) {
+      @case ('M01') {
+        <section class="screen screen--home">
+          <header class="app-bar"><div class="mini-brand"><span><app-icon name="alarm" /></span><strong>Alarma Conversacional</strong></div><button class="icon-button" (click)="open('X14')" aria-label="Ayuda"><app-icon name="help" /></button></header>
+          <div class="screen-heading"><div><p class="eyebrow">Mi día</p><h1>Mis alarmas</h1></div><span class="date-chip">Hoy</span></div>
+          <article class="next-card"><div class="wave-bg"></div><span class="status-chip"><i></i> Próxima</span><p class="big-time">06:30</p><h2>Entrenamiento de fuerza</h2><p>Mañana · Conversación media</p><button class="button button--amber" (click)="go('alarma-activa')">Probar alarma <app-icon name="arrow" /></button></article>
+          <div class="list-title"><h2>Programadas</h2><span>2 alarmas</span></div>
+          <article class="alarm-row" [class.disabled]="!alarmEnabled()"><span class="row-icon"><app-icon name="clock" /></span><div><strong>06:30</strong><span>Entrenamiento de fuerza</span><small>L M X J V</small></div><button class="switch" [class.on]="alarmEnabled()" role="switch" [attr.aria-checked]="alarmEnabled()" (click)="toggleAlarm()"><i></i></button></article>
+          <article class="alarm-row"><span class="row-icon row-icon--amber"><app-icon name="calendar" /></span><div><strong>08:00</strong><span>Preparar presentación</span><small>Viernes</small></div><button class="switch on" role="switch" aria-checked="true"><i></i></button></article>
+          <button class="new-alarm" (click)="go('crear-alarma')"><app-icon name="plus" /> Nueva alarma</button>
+        </section>
+      }
+      @case ('X01') {
+        <section class="screen empty-screen"><header class="app-bar"><div class="mini-brand"><span><app-icon name="alarm" /></span><strong>Alarma Conversacional</strong></div><button class="icon-button" (click)="open('X14')"><app-icon name="help" /></button></header><div class="empty-content"><span class="hero-icon"><app-icon name="alarm" /></span><h1>Sin alarmas</h1><p>Crea tu primera alarma y define qué quieres lograr cuando se active.</p><button class="button button--primary button--full" (click)="go('crear-alarma')">Crear mi primera alarma</button></div></section>
+      }
+      @case ('V01') {
+        <section class="screen form-screen"><header class="simple-bar"><button class="icon-button" (click)="go('inicio')"><app-icon name="back" /></button><strong>Crear alarma</strong><span></span></header>
+          <button class="time-picker" (click)="open('X07')"><span>Hora</span><strong>{{ time() }}</strong><small>Toca para cambiar</small></button>
+          <button class="field-button" (click)="open('X11')"><span><small>Propósito</small><strong>{{ purpose() }}</strong></span><app-icon name="edit" /></button>
+          <fieldset><legend>Días</legend><div class="day-grid">@for(day of ['L','M','X','J','V','S','D']; track day){<button type="button" class="day-chip" [class.selected]="isDaySelected(day)" [attr.aria-pressed]="isDaySelected(day)" (click)="toggleDay(day)">{{ day }}</button>}</div></fieldset>
+          <button class="field-button" (click)="open('X04')"><span><small>Intensidad de conversación</small><strong>{{ intensity() }}</strong></span><app-icon name="arrow" /></button>
+          <button class="field-button" (click)="open('X08')"><span><small>Reintentos máximos</small><strong>{{ retries() }} intentos</strong></span><app-icon name="arrow" /></button>
+          <div class="toggle-row"><span><strong>Respuesta por voz</strong><small>Los botones siempre estarán disponibles</small></span><button class="switch" [class.on]="voiceEnabled()" role="switch" [attr.aria-checked]="voiceEnabled()" (click)="toggleVoice()"><i></i></button></div>
+          <div class="sticky-actions"><button class="button button--primary button--full" (click)="go('alarma-guardada')">Guardar alarma</button><button class="button button--text button--full" (click)="go('inicio')">Cancelar</button></div>
+        </section>
+      }
+      @case ('M05') {
+        <section class="screen centered-screen"><span class="hero-icon hero-icon--success"><app-icon name="check" /></span><p class="eyebrow">Todo listo</p><h1>Alarma guardada</h1><p>Te preguntaremos por tu entrenamiento mañana a las {{ time() }}.</p><article class="summary-card"><span><app-icon name="alarm" /></span><div><strong>{{ time() }}</strong><small>{{ purpose() }} · {{ intensity() }}</small></div></article><button class="button button--primary button--full" (click)="go('inicio')">Volver a mis alarmas</button><button class="button button--text button--full" (click)="go('alarma-activa')">Probar ahora</button></section>
+      }
+      @case ('M06') {
+        <section class="screen dark-screen"><header class="dark-bar"><span class="active-chip">Alarma activa</span><button class="icon-button icon-button--dark" (click)="go('inicio')"><app-icon name="close" /></button></header><div class="alarm-center"><p class="alarm-clock">06:30</p><p>Miércoles, 16 de septiembre</p><div class="voice-orb"><app-icon name="wave" /></div><h1>Es momento de tu entrenamiento</h1><p>Te haré una pregunta breve para ayudarte a empezar.</p></div><div class="dark-actions"><button class="button button--amber button--full" (click)="go('responder')">Continuar</button><button class="button button--dark-outline button--full" (click)="go('microfono')"><app-icon name="microphone" /> Usar voz</button></div></section>
+      }
+      @case ('V02') {
+        <section class="screen dark-screen"><header class="dark-bar"><span class="active-chip">Pregunta 1 de 3</span><button class="icon-button icon-button--dark" (click)="go('inicio')"><app-icon name="close" /></button></header><div class="question-card"><span class="hero-icon hero-icon--amber"><app-icon name="alarm" /></span><h1>¿Vas a iniciar tu entrenamiento de fuerza?</h1><p>Elige la respuesta que mejor refleje tu situación.</p></div><div class="answer-stack"><button class="button button--amber button--full" (click)="go('actividad-confirmada')">Sí, voy a empezar</button><button class="button button--dark-outline button--full" (click)="go('posponer')">Aún no · posponer</button><button class="button button--dark-ghost button--full" (click)="go('reprogramar')">Reprogramar</button></div><button class="voice-link" [class.listening]="voiceListening()" (click)="simulateVoice()"><app-icon name="microphone" /> {{ voiceListening() ? 'Escuchando…' : 'Responder por voz' }}</button></section>
+      }
+      @case ('X02') {
+        <section class="screen dark-screen centered-screen"><span class="hero-icon hero-icon--error"><app-icon name="microphone" /></span><p class="eyebrow eyebrow--light">No pudimos entenderte</p><h1>Intenta de nuevo</h1><p>Acércate al micrófono o continúa usando los botones.</p><div class="full-actions"><button class="button button--amber button--full" (click)="simulateVoice()">Reintentar con voz</button><button class="button button--dark-outline button--full" (click)="go('responder')">Usar los botones</button></div></section>
+      }
+      @case ('X03') {
+        <section class="screen dark-screen centered-screen"><span class="hero-icon hero-icon--error"><app-icon name="network" /></span><p class="eyebrow eyebrow--light">Sin conexión</p><h1>La voz no está disponible</h1><p>Puedes completar la alarma normalmente usando las opciones táctiles.</p><div class="full-actions"><button class="button button--amber button--full" (click)="go('responder')">Continuar con botones</button><button class="button button--dark-ghost button--full" (click)="go('inicio')">Volver al inicio</button></div></section>
+      }
+      @case ('M08') {
+        <section class="screen centered-screen celebration"><span class="hero-icon hero-icon--success"><app-icon name="check" /></span><p class="eyebrow">Actividad confirmada</p><h1>¡Vamos!</h1><p>Registramos tu decisión. Este es un buen momento para dar el primer paso.</p><div class="energy-lines" aria-hidden="true"><i></i><i></i><i></i></div><button class="button button--primary button--full" (click)="go('inicio')">Volver al inicio</button></section>
+      }
+      @case ('M11') {
+        <section class="screen"><header class="simple-bar"><button class="icon-button" (click)="go('responder')"><app-icon name="back" /></button><strong>Posponer</strong><span></span></header><div class="screen-heading compact"><div><p class="eyebrow">Más tiempo</p><h1>¿Cuándo te preguntamos de nuevo?</h1></div></div><div class="postpone-grid">@for(minute of [5,10,15];track minute){<button [class.selected]="postponeMinutes()===minute" (click)="choosePostpone(minute)"><strong>{{ minute }}</strong><span>minutos</span></button>}<button [class.selected]="![5,10,15].includes(postponeMinutes())" (click)="open('X15')"><app-icon name="plus" /><span>Otro</span></button></div><div class="info-banner"><app-icon name="info" /><p>Este será el intento 2 de {{ retries() }}. Siempre podrás cancelar o reprogramar.</p></div><button class="button button--primary button--full bottom-action" (click)="go('proximo-intento')">Posponer {{ postponeMinutes() }} minutos</button></section>
+      }
+      @case ('M12') {
+        <section class="screen"><header class="simple-bar"><button class="icon-button" (click)="go('responder')"><app-icon name="back" /></button><strong>Reprogramar</strong><span></span></header><div class="screen-heading compact"><div><p class="eyebrow">Nueva oportunidad</p><h1>Elige otra fecha y hora</h1></div></div><button class="field-button large-field" (click)="open('X10')"><span><small>Fecha</small><strong>{{ date() }}</strong></span><app-icon name="calendar" /></button><button class="field-button large-field" (click)="open('X07')"><span><small>Hora</small><strong>{{ time() }}</strong></span><app-icon name="clock" /></button><div class="info-banner"><app-icon name="shield" /><p>Reprogramar no se considera un incumplimiento. Tú mantienes el control.</p></div><button class="button button--primary button--full bottom-action" (click)="go('alarma-guardada')">Guardar nueva programación</button></section>
+      }
+      @case ('M13') {
+        <section class="screen centered-screen"><span class="hero-icon"><app-icon name="clock" /></span><p class="eyebrow">Próximo intento</p><h1>Volveremos en {{ postponeMinutes() }} minutos</h1><p>La alarma se activará de nuevo a las 06:40. Puedes cambiar esta decisión en cualquier momento.</p><article class="summary-card"><span><app-icon name="alarm" /></span><div><strong>Intento 2 de {{ retries() }}</strong><small>{{ purpose() }}</small></div></article><button class="button button--primary button--full" (click)="go('alarma-activa')">Simular próximo intento</button><button class="button button--text button--full" (click)="go('inicio')">Cancelar recordatorio</button></section>
+      }
+      @case ('M14') {
+        <section class="screen centered-screen"><span class="hero-icon hero-icon--amber"><app-icon name="shield" /></span><p class="eyebrow">Cierre seguro</p><h1>Terminamos los intentos por hoy</h1><p>No seguiremos interrumpiéndote. Puedes reprogramar la actividad o volver al inicio.</p><div class="info-banner"><app-icon name="info" /><p>La alarma nunca te bloquea ni continúa indefinidamente.</p></div><button class="button button--primary button--full" (click)="go('reprogramar')">Reprogramar actividad</button><button class="button button--text button--full" (click)="go('inicio')">Volver al inicio</button></section>
+      }
+      @case ('M15') {
+        <section class="screen dark-screen centered-screen"><span class="hero-icon hero-icon--amber"><app-icon name="microphone" /></span><p class="eyebrow eyebrow--light">Respuesta por voz</p><h1>Activa el micrófono</h1><p>Solo se utilizará mientras respondes la alarma. También puedes continuar sin conceder el permiso.</p><div class="full-actions"><button class="button button--amber button--full" (click)="open('X09')">Permitir micrófono</button><button class="button button--dark-outline button--full" (click)="go('responder')">Continuar sin voz</button></div></section>
+      }
+      @case ('M19') {
+        <section class="screen"><header class="app-bar"><div><p class="eyebrow">Preferencias</p><h1>Ajustes</h1></div><button class="icon-button" (click)="open('X14')"><app-icon name="help" /></button></header><div class="settings-list"><button (click)="open('X12')"><span class="row-icon"><app-icon name="alarm" /></span><span><strong>Notificaciones</strong><small>Sonido y recordatorios</small></span><app-icon name="arrow" /></button><button (click)="open('X13')"><span class="row-icon"><app-icon name="settings" /></span><span><strong>Accesibilidad</strong><small>Texto y contraste</small></span><app-icon name="arrow" /></button><button (click)="go('privacidad')"><span class="row-icon"><app-icon name="shield" /></span><span><strong>Privacidad y datos</strong><small>Permisos y eliminación</small></span><app-icon name="arrow" /></button><button (click)="open('X14')"><span class="row-icon"><app-icon name="help" /></span><span><strong>Ayuda</strong><small>Cómo funciona la aplicación</small></span><app-icon name="arrow" /></button></div><p class="version">Alarma Conversacional · MVP 1.0</p></section>
+      }
+      @case ('M20') {
+        <section class="screen"><header class="simple-bar"><button class="icon-button" (click)="go('ajustes')"><app-icon name="back" /></button><strong>Privacidad y datos</strong><span></span></header><div class="privacy-hero"><span class="hero-icon"><app-icon name="shield" /></span><h1>Tus datos, bajo tu control</h1><p>Este prototipo procesa la información localmente y no la envía a servicios externos.</p></div><div class="settings-list destructive-list"><button (click)="open('X05')"><span class="row-icon"><app-icon name="delete" /></span><span><strong>Eliminar alarmas</strong><small>Conserva ajustes y preferencias</small></span><app-icon name="arrow" /></button><button (click)="open('X06')"><span class="row-icon row-icon--danger"><app-icon name="delete" /></span><span><strong>Eliminar todos mis datos</strong><small>Alarmas, ajustes y preferencias</small></span><app-icon name="arrow" /></button></div></section>
+      }
+      @case ('X16') {
+        <section class="screen centered-screen"><span class="hero-icon hero-icon--success"><app-icon name="check" /></span><p class="eyebrow">Proceso completado</p><h1>Tus datos fueron eliminados</h1><p>La aplicación volvió a su estado inicial. Puedes comenzar de nuevo cuando quieras.</p><button class="button button--primary button--full" (click)="go('sin-alarmas')">Ir al inicio</button></section>
+      }
+    }
+
+    @if (showBottomNav()) {
+      <nav class="bottom-nav" aria-label="Navegación móvil"><button [class.active]="screen()==='M01'||screen()==='X01'" (click)="go('inicio')"><app-icon name="home" /><span>Inicio</span></button><button (click)="go('crear-alarma')"><app-icon name="plus" /><span>Crear</span></button><button [class.active]="screen()==='M19'||screen()==='M20'" (click)="go('ajustes')"><app-icon name="settings" /><span>Ajustes</span></button></nav>
+    }
+  </main>
+
+  @if (overlay(); as currentOverlay) {
+    <div class="overlay-backdrop" (click)="close()" (keydown.escape)="close()" role="presentation">
+      <section class="overlay-card" [attr.data-overlay]="currentOverlay" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+        <header><span class="overlay-code">{{ currentOverlay }}</span><button class="icon-button" (click)="close()"><app-icon name="close" /></button></header>
+        @switch (currentOverlay) {
+          @case ('X04') { <h2>Intensidad de conversación</h2><p>Define cuántas preguntas quieres recibir.</p><div class="option-list">@for(option of ['Baja','Media','Alta'];track option){<button [class.selected]="intensity()===option" (click)="chooseIntensity(option)"><strong>{{ option }}</strong><span>{{ option==='Baja'?'Una pregunta breve':option==='Media'?'Hasta dos preguntas':'Hasta tres preguntas' }}</span></button>}</div> }
+          @case ('X05') { <span class="dialog-icon dialog-icon--danger"><app-icon name="delete" /></span><h2>¿Eliminar todas las alarmas?</h2><p>Se conservarán tus preferencias y ajustes.</p><button class="button button--danger button--full" (click)="close();go('sin-alarmas')">Eliminar alarmas</button><button class="button button--text button--full" (click)="close()">Cancelar</button> }
+          @case ('X06') { <span class="dialog-icon dialog-icon--danger"><app-icon name="delete" /></span><h2>¿Eliminar todos tus datos?</h2><p>Esta acción eliminará alarmas, preferencias y permisos del prototipo.</p><button class="button button--danger button--full" (click)="close();go('datos-eliminados')">Sí, eliminar datos</button><button class="button button--text button--full" (click)="close()">Cancelar</button> }
+          @case ('X07') { <h2>Seleccionar hora</h2><p>Elige cuándo debe activarse la alarma.</p><label>Hora<input type="time" [ngModel]="time()" (ngModelChange)="time.set($event)" /></label><button class="button button--primary button--full" (click)="close()">Aplicar hora</button> }
+          @case ('X08') { <h2>Número de reintentos</h2><p>Al alcanzar el límite la alarma finalizará de forma segura.</p><div class="number-options">@for(value of [1,2,3];track value){<button [class.selected]="retries()===value" (click)="chooseRetries(value)">{{ value }}</button>}</div> }
+          @case ('X09') { <span class="dialog-icon"><app-icon name="microphone" /></span><h2>Permitir acceso al micrófono</h2><p>Alarma Conversacional quiere escucharte únicamente mientras respondes.</p><button class="button button--primary button--full" (click)="close();go('responder')">Permitir</button><button class="button button--text button--full" (click)="close();go('responder')">No permitir</button> }
+          @case ('X10') { <h2>Seleccionar fecha</h2><p>Programa una nueva oportunidad para la actividad.</p><label>Fecha<input type="date" [ngModel]="date()" (ngModelChange)="date.set($event)" /></label><button class="button button--primary button--full" (click)="close()">Aplicar fecha</button> }
+          @case ('X11') { <h2>Propósito de la alarma</h2><p>Escribe una acción concreta y fácil de reconocer.</p><label>¿Qué quieres hacer?<input type="text" maxlength="48" [ngModel]="purpose()" (ngModelChange)="purpose.set($event)" /></label><button class="button button--primary button--full" (click)="close()">Guardar propósito</button> }
+          @case ('X12') { <h2>Notificaciones</h2><p>Configura cómo quieres recibir los avisos.</p><div class="toggle-row"><span><strong>Notificaciones</strong><small>Recordatorios de la alarma</small></span><button class="switch" [class.on]="notificationsEnabled()" role="switch" [attr.aria-checked]="notificationsEnabled()" (click)="toggleNotifications()"><i></i></button></div><div class="toggle-row"><span><strong>Sonido gradual</strong><small>Aumenta suavemente</small></span><button class="switch on" role="switch" aria-checked="true"><i></i></button></div><button class="button button--primary button--full" (click)="close()">Guardar</button> }
+          @case ('X13') { <h2>Accesibilidad</h2><p>Ajusta la lectura de la interfaz.</p><div class="toggle-row"><span><strong>Texto grande</strong><small>Aumenta el tamaño del contenido</small></span><button class="switch" [class.on]="largeText()" (click)="largeText.update(v=>!v)"><i></i></button></div><div class="toggle-row"><span><strong>Alto contraste</strong><small>Refuerza bordes y colores</small></span><button class="switch" [class.on]="highContrast()" (click)="highContrast.update(v=>!v)"><i></i></button></div><button class="button button--primary button--full" (click)="close()">Listo</button> }
+          @case ('X14') { <span class="dialog-icon"><app-icon name="help" /></span><h2>¿Cómo funciona?</h2><p>Programa una acción. Cuando llegue la hora, responde con botones o voz. Puedes confirmar, posponer, reprogramar o cerrar la alarma.</p><button class="button button--primary button--full" (click)="close()">Entendido</button> }
+          @case ('X15') { <h2>Otro intervalo</h2><p>Elige cuántos minutos necesitas antes del siguiente intento.</p><label>Minutos<input type="number" min="1" max="120" [ngModel]="customMinutes()" (ngModelChange)="customMinutes.set(+$event)" /></label><button class="button button--primary button--full" (click)="saveCustomPostpone()">Usar {{ customMinutes() }} minutos</button> }
+        }
+      </section>
+    </div>
+  }
+</div>
