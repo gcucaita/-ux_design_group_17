@@ -16,36 +16,12 @@ La página inicial permite acceder a dos áreas:
 - Tipografía Manrope incluida localmente.
 - GitHub Actions para despliegue automático.
 
-## Requisitos
-
-- Node.js 22 o superior.
-- npm 11 o superior.
-
-## Instalación
-
-```bash
-npm install
-```
-
-## Ejecución local
-
-```bash
-npm start
-```
-
-Después abre `http://localhost:4200`.
-
 ## Compilación
 
 ```bash
 npm run build
 ```
 
-## Pruebas
-
-```bash
-npm test
-```
 
 ## Navegación principal
 
@@ -70,57 +46,7 @@ No incluye:
 - Micrófono del dispositivo.
 - Analítica, evidencia o contacto de confianza.
 
-## Publicación en GitHub Pages
 
-El repositorio incluye el flujo `.github/workflows/deploy-pages.yml`.
 
-### Crear el repositorio remoto
 
-1. Crea un repositorio público vacío en GitHub, sin agregar README ni `.gitignore`.
-2. Desde la carpeta del proyecto ejecuta:
 
-```bash
-git config user.name "TU NOMBRE"
-git config user.email "TU CORREO DE GITHUB"
-git commit -m "feat: crea prototipo navegable web y mobile"
-git branch -M main
-git remote add origin https://github.com/TU-USUARIO/TU-REPOSITORIO.git
-git push -u origin main
-```
-
-Los archivos del paquete ya quedan agregados al índice de Git; por eso no es necesario repetir `git init` ni `git add`.
-
-### Activar el sitio
-
-Después de subir el código al repositorio público:
-
-1. Ingresa a `Settings`.
-2. Abre `Pages`.
-3. En `Build and deployment`, selecciona `GitHub Actions`.
-4. Haz push a la rama `main`.
-
-El workflow instalará las dependencias, compilará Angular y publicará el resultado.
-
-## Convención de ramas
-
-- `main`: versión estable y entregable.
-- `develop`: integración del equipo.
-- `feature/mobile-*`: trabajo de maquetación móvil.
-- `feature/web-*`: trabajo de maquetación web.
-
-## Convención de commits
-
-```text
-feat: agrega pantalla de creación de alarma
-fix: corrige espaciado de selector de días
-docs: actualiza instrucciones de ejecución
-style: ajusta tokens del design system
-```
-
-## Identidad visual
-
-- Concepto: energía para actuar sin perder el control.
-- Tipografía: Manrope.
-- Color principal: `#4F46E5`.
-- Color de acción: `#F59E0B`.
-- Interfaz clara durante configuración y oscura durante la alarma activa.
