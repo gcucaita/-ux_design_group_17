@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Alarma Conversacional</string>
+    <string name="title_activity_main">Alarma Conversacional</string>
+    <string name="package_name">com.gonzalocucaita.alarmaconversacional</string>
+    <string name="custom_url_scheme">com.gonzalocucaita.alarmaconversacional</string>
+</resources>

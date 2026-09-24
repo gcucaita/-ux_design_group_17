@@ -2,6 +2,9 @@
 
 # Compiled output
 /dist
+/android/.gradle
+/android/app/build
+/android/build
 /tmp
 /out-tsc
 /bazel-out

@@ -47,6 +47,33 @@ npm run build
 npm test
 ```
 
+## Aplicación Android (APK)
+
+El frontend también está preparado como aplicación Android con Capacitor:
+
+- Identificador: `com.gonzalocucaita.alarmaconversacional`.
+- Versión mínima: Android 8.1, API 27.
+- Versión objetivo: API 36.
+- Las pantallas se ejecutan desde recursos locales; no requieren conexión a internet.
+
+Para sincronizar el frontend con el proyecto Android:
+
+```bash
+npm run mobile:sync
+```
+
+Para generar localmente un APK de prueba firmado:
+
+```bash
+npm run mobile:apk
+```
+
+El resultado se genera en `android/app/build/outputs/apk/debug/app-debug.apk`.
+
+### Generación automática en GitHub
+
+El workflow `.github/workflows/build-android-apk.yml` genera el APK en cada cambio móvil enviado a `main`. También puede ejecutarse manualmente desde **Actions → Build Android APK → Run workflow**. Al finalizar, descarga el artefacto **Alarma-Conversacional-APK**.
+
 ## Navegación principal
 
 | Ruta | Contenido |
